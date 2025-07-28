@@ -11,6 +11,8 @@ import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 import router from './routes/authRoutes.js'
 import cookieParser from 'cookie-parser'
+import swaggerUi from 'swagger-ui-express'
+import swaggerSpec from './swagger/swagger.js'
 
 // Define __dirname in ES Modules
 const __filename = fileURLToPath(import.meta.url)
@@ -20,6 +22,7 @@ const __dirname = dirname(__filename)
 dotenv.config({ path: './config.env' })
 
 const app = express()
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 app.use(cookieParser())
 
 // Global Middleware
