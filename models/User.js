@@ -1,87 +1,105 @@
-import bcrypt from "bcryptjs";
-import mongoose from "mongoose";
+import bcrypt from 'bcryptjs'
+import mongoose from 'mongoose'
+import crypto from 'crypto'
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, 'A user must have a name'],
     trim: true,
-    },
-    email: {
+  },
+  email: {
     type: String,
     required: [true, 'A user must have an email'],
     unique: true,
     lowercase: true,
     validate: {
       validator: function (val) {
-        return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(val);
+        return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(val)
       },
       message: 'Please provide a valid email address',
     },
-    },
-    password: {
-      type: String,
-      required: [true, 'A user must have a password'],
-      minlength: 8,
-      select: false, 
-    },
-    passwordConfirm: {
-      type: String,
-      required: [true, 'Please confirm your password'],
-      validate: {
-        // This only works on CREATE and SAVE
-        validator: function (val) {
-          return val === this.password;
-        },
-        message: 'Passwords do not match',
+  },
+  password: {
+    type: String,
+    required: [true, 'A user must have a password'],
+    minlength: 8,
+    select: false,
+  },
+  passwordConfirm: {
+    type: String,
+    required: [true, 'Please confirm your password'],
+    validate: {
+      // This only works on CREATE and SAVE
+      validator: function (val) {
+        return val === this.password
       },
+      message: 'Passwords do not match',
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    role: {
-        type: String,
-        enum: ['user', 'admin','guide'],
-        default: 'user',
-        },
-    isVerified: { type: Boolean, default: false },
-     passwordChangedAt: Date,
-     passwordResetToken: String,
-     passwordResetExpires: Date,
-});
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin', 'guide'],
+    default: 'user',
+  },
+  isVerified: { type: Boolean, default: false },
+  passwordChangedAt: Date,
+  passwordResetToken: String,
+  passwordResetExpires: Date,
+})
 
 userSchema.pre('save', async function (next) {
   // Only run this function if password was modified
-  if (!this.isModified('password')) return next();
+  if (!this.isModified('password')) return next()
 
   // Hash the password with cost of 12
-  this.password = await bcrypt.hash(this.password, 12);
+  this.password = await bcrypt.hash(this.password, 12)
 
   // Delete confirmPassword field
-  this.passwordConfirm = undefined;
-  next();
-});
+  this.passwordConfirm = undefined
+  next()
+})
 // Instance method to check if password is correct
 userSchema.methods.correctPassword = async function (
   candidatePassword,
-  userPassword,
+  userPassword
 ) {
-  return await bcrypt.compare(candidatePassword, userPassword);
-};
+  return await bcrypt.compare(candidatePassword, userPassword)
+}
 
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   // If the user has changed password after the token was issued
   if (this.passwordChangedAt) {
     const changedTimestamp = parseInt(
       this.passwordChangedAt.getTime() / 1000,
-      10,
-    );
-    return JWTTimestamp < changedTimestamp;
+      10
+    )
+    return JWTTimestamp < changedTimestamp
   }
-  return false;
-};
+  return false
+}
 
-const User = mongoose.model('User', userSchema);
+userSchema.methods.createPasswordResetToken = function () {
+  // Create a reset token
+  const resetToken = crypto.randomBytes(32).toString('hex')
 
-export default User;
+  // Hash the token and set it to passwordResetToken field
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex')
+  console.log({ resetToken }, this.passwordResetToken)
+
+  // Set the expiration time for the token
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000 // 10 minutes
+
+  return resetToken
+}
+
+const User = mongoose.model('User', userSchema)
+
+export default User
