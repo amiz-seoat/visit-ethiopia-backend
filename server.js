@@ -1,15 +1,19 @@
 import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config({ path: './config.env' });
+ 
+
 import app from './app.js';
 import connectDB from './config/db.js';
-// Handle uncaught exceptions
+
+
 process.on('uncaughtException', (err) => {
   console.error(err.name, err.message);
   console.log('Uncaught Exception! Shutting down...');
   process.exit(1);
 });
 
-// Load environment variables
-dotenv.config({ path: './config.env' });
 
 // Connect to MongoDB
 

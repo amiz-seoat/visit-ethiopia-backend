@@ -33,6 +33,36 @@ const createSendToken = (user, statusCode, res) => {
   })
 }
 
+
+
+export const updatePassword = catchAsync(async (req, res, next) => {
+  // 1) Get user from collection
+  const user = await User.findById(req.user._id).select('+password')
+
+  // 2) Check if POSTed current password is correct
+  if (!(await user.correctPassword(req.body.currentPassword, user.password))) {
+    return next(new AppError('Your current password is incorrect.', 401))
+  }
+
+  // 3) If so, update password
+  user.password = req.body.newPassword
+  user.passwordConfirm = req.body.newPasswordConfirm
+  await user.save() // will trigger pre-save middleware to hash password
+
+  // 4) Log user in, send JWT
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  })
+
+  res.status(200).json({
+    status: 'success',
+    token,
+    message: 'Password updated successfully!',
+  })
+})
+
+
+
 export const signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,

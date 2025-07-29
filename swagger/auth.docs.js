@@ -167,3 +167,41 @@
  *       401:
  *         description: Unauthorized (no or invalid token)
  */
+
+/**
+ * @swagger
+ * /users/updatePassword:
+ *   patch:
+ *     summary: Change password for a logged-in user
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - currentPassword
+ *               - newPassword
+ *               - newPasswordConfirm
+ *             properties:
+ *               currentPassword:
+ *                 type: string
+ *                 example: oldPassword123
+ *               newPassword:
+ *                 type: string
+ *                 example: newPassword123
+ *               newPasswordConfirm:
+ *                 type: string
+ *                 example: newPassword123
+ *     responses:
+ *       200:
+ *         description: Password updated successfully
+ *       400:
+ *         description: Bad Request (validation error)
+ *       401:
+ *         description: Unauthorized or incorrect current password
+ */
+
