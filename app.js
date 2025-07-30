@@ -19,7 +19,11 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 // Load environment variables
-dotenv.config({ path: './config.env' })
+
+
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config({ path: './config.env' });
+}
 
 const app = express()
 
