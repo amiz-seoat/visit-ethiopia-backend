@@ -22,32 +22,36 @@ const __dirname = dirname(__filename)
 dotenv.config({ path: './config.env' })
 
 const app = express()
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
-app.use(cookieParser())
 
-// Global Middleware
-// Set security HTTP headers
+// Swagger docs route
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+
+// Middleware
+app.use(cookieParser())
 app.use(helmet())
 
-// Limit requests from same IP
+// Rate limiting
 const limiter = rateLimit({
   max: 100,
   windowMs: 60 * 60 * 1000,
   message: 'Too many requests from this IP, please try again in an hour!',
 })
 app.use('/api', limiter)
+
 app.use(express.json({ limit: '10kb' }))
-// Data sanitization against NoSQL injection
 app.use(mongoSanitize())
-// Data sanitization against XSS
 app.use(xss())
-// Serving static files
 app.use(express.static(path.join(__dirname, 'public')))
 
-// Routes
+// ✅ Test Route for Vercel/health check
+app.get('/', (req, res) => {
+  res.send('API is working')
+})
+
+// Main API routes
 app.use('/api/v1/users', router)
 
-// Handle unmatched routes
+// Catch unmatched routes
 app.all(/(.*)/, (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`))
 })
