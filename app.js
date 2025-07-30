@@ -13,6 +13,9 @@ import router from './routes/authRoutes.js'
 import cookieParser from 'cookie-parser'
 import swaggerUi from 'swagger-ui-express'
 import swaggerSpec from './swagger/swagger.js'
+import cors from 'cors';
+
+
 
 // Define __dirname in ES Modules
 const __filename = fileURLToPath(import.meta.url)
@@ -59,6 +62,11 @@ app.use('/api/v1/users', router)
 app.all(/(.*)/, (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`))
 })
+
+app.use(cors({
+  origin: ['http://localhost:5173', 'https://visit-ethiopia-frontend.vercel.app'],
+  credentials: true,
+}));
 
 // Global error handler
 app.use(globalErrorHandler)
