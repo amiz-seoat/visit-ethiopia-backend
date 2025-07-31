@@ -3,9 +3,14 @@ import mongoose from 'mongoose'
 import crypto from 'crypto'
 
 const userSchema = new mongoose.Schema({
-  name: {
+  FirstName: {
     type: String,
-    required: [true, 'A user must have a name'],
+    required: [true, 'A user must have a First Name'],
+    trim: true,
+  },
+  LastName: {
+    type: String,
+    required: [true, 'A user must have a Last Name'],
     trim: true,
   },
   email: {

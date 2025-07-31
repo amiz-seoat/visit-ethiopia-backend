@@ -33,8 +33,6 @@ const createSendToken = (user, statusCode, res) => {
   })
 }
 
-
-
 export const updatePassword = catchAsync(async (req, res, next) => {
   // 1) Get user from collection
   const user = await User.findById(req.user._id).select('+password')
@@ -61,11 +59,10 @@ export const updatePassword = catchAsync(async (req, res, next) => {
   })
 })
 
-
-
 export const signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
-    name: req.body.name,
+    FirstName: req.body.FirstName,
+    LastName: req.body.LastName,
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
@@ -78,9 +75,7 @@ export const signup = catchAsync(async (req, res, next) => {
   })
 
   // Verification URL
-  const verifyUrl = `${req.protocol}://${req.get(
-    'host'
-  )}/api/v1/users/verify/${token}`
+  const verifyUrl = `${process.env.BACKEND_URL}/api/v1/users/verify/${token}`
   const message = `Please verify your email: ${verifyUrl}`
 
   const htmlMessage = `
