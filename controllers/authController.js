@@ -18,6 +18,7 @@ const createSendToken = (user, statusCode, res) => {
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
   }
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true // Serve cookies over HTTPS in production
   res.cookie('jwt', token, cookieOptions)
