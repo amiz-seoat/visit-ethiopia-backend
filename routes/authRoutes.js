@@ -1,4 +1,4 @@
-import express from 'express'
+import express from "express";
 import {
   signup,
   login,
@@ -8,28 +8,25 @@ import {
   forgotPassword,
   resetPassword,
   updatePassword,
-} from '../controllers/authController.js'
+} from "../controllers/authController.js";
 
-const router = express.Router()
-// Define routes for user authentication
-router.post('/signup', signup)
-router.post('/login', login)
-router.get('/verify/:token', verifyEmail)
-router.post('/logout', logOut)
-router.patch('/updatePassword', protect, updatePassword)
-router.post('/forgotPassword', forgotPassword)
-router.patch(
-  '/resetPassword/:token',
-  (req, res, next) => {
-    next()
-  },
-  resetPassword
-)
-router.get('/test', protect, (req, res) => {
+const router = express.Router();
+
+router.post("/signup", signup);
+router.post("/login", login);
+router.get("/verify/:token", verifyEmail);
+router.post("/logout", logOut);
+
+router.patch("/updatePassword", protect, updatePassword);
+router.post("/forgotPassword", forgotPassword);
+router.patch("/resetPassword/:token", resetPassword);
+
+// ✅ Test route (protected)
+router.get("/test", protect, (req, res) => {
   res.status(200).json({
-    status: 'success',
-    message: 'You are authenticated and can access this route.',
-  })
-})
+    status: "success",
+    message: "You are authenticated and can access this route.",
+  });
+});
 
-export default router
+export default router;
