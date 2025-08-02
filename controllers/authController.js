@@ -115,7 +115,12 @@ export const signup = catchAsync(async (req, res, next) => {
     expiresIn: "1d",
   });
 
-  const verifyUrl = `${process.env.BACKEND_URL}/api/v1/users/verify/${token}`;
+ const backendUrl = process.env.NODE_ENV === 'production'
+  ? process.env.PROD_BACKEND_URL
+  : process.env.BACKEND_URL;
+
+const verifyUrl = `${backendUrl}/api/v1/users/verify/${token}`;
+
   const message = `Please verify your email: ${verifyUrl}`;
 
   const htmlMessage = `
