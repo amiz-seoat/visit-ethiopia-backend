@@ -20,12 +20,14 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 // Load environment variables
-
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config({ path: './config.env' })
 }
 
 const app = express()
+
+// ✅ Fix: Trust proxy headers from Vercel
+app.set('trust proxy', 1)
 
 // CORS middleware
 app.use(
