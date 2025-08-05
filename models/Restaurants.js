@@ -1,9 +1,10 @@
 import mongoose from 'mongoose'
 
-const HotelSchema = new mongoose.Schema({
+const RestaurantSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   shortDescription: { type: String, required: true },
+  cuisineType: [{ type: String, required: true }],
   location: {
     address: { type: String, required: true },
     city: { type: String, required: true },
@@ -13,29 +14,36 @@ const HotelSchema = new mongoose.Schema({
       lng: { type: Number },
     },
   },
-  stars: { type: Number, min: 1, max: 5 },
-  amenities: [{ type: String }],
-  roomTypes: [
+  openingHours: {
+    monday: { type: String },
+    tuesday: { type: String },
+    wednesday: { type: String },
+    thursday: { type: String },
+    friday: { type: String },
+    saturday: { type: String },
+    sunday: { type: String },
+  },
+  priceRange: { type: String, enum: ['$', '$$', '$$$', '$$$$'] },
+  menu: [
     {
-      type: { type: String, required: true },
-      description: { type: String },
-      price: { type: Number, required: true },
-      capacity: { type: Number, required: true },
-      availableRooms: { type: Number, required: true },
-      images: [{ type: String }],
+      category: { type: String, required: true },
+      items: [
+        {
+          name: { type: String, required: true },
+          description: { type: String },
+          price: { type: Number, required: true },
+          isVegetarian: { type: Boolean, default: false },
+          isVegan: { type: Boolean, default: false },
+        },
+      ],
     },
   ],
   images: [{ type: String }],
   coverImage: { type: String, required: true },
   contact: {
     phone: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String },
     website: { type: String },
-  },
-  policies: {
-    checkIn: { type: String },
-    checkOut: { type: String },
-    cancellation: { type: String },
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
@@ -54,5 +62,5 @@ const HotelSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now },
 })
 
-const Hotel = mongoose.model('Hotel', HotelSchema)
-export default Hotel
+const Restaurant = mongoose.model('Restaurant', RestaurantSchema)
+export default Restaurant
