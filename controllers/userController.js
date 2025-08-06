@@ -1,6 +1,7 @@
 import User from '../models/User.js'
 import catchAsync from '../utils/catchAsync.js'
 import AppError from '../utils/appError.js'
+import factory from './handlerFactory.js'
 
 const fillterObj = (obj, allowedFields) => {
   const newObj = {}
