@@ -84,7 +84,7 @@ app.use('/api/v1/news', newsRouter)
 app.use('/api/v1/restaurants', restaurantRouter)
 app.use('/api/v1/reviews', reviewRouter)
 app.use('/api/v1/tours', tourRouter)
-app.use('/api/v1/transport', transportRouter)
+app.use('/api/v1/transports', transportRouter)
 
 // Catch unmatched routes
 app.all(/(.*)/, (req, res, next) => {
