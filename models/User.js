@@ -109,6 +109,10 @@ userSchema.methods.createPasswordResetToken = function () {
 
   return resetToken
 }
+userSchema.pre(/^find/, function (next) {
+  this.find({ active: { $ne: false } })
+  next()
+})
 
 const User = mongoose.model('User', userSchema)
 

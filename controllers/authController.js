@@ -85,6 +85,16 @@ export const protect = catchAsync(async (req, res, next) => {
       )
     }
 
+    // BLOCK inactive users
+    if (currentUser.active === false) {
+      return next(
+        new AppError(
+          'This user is no longer active. Please contact support.',
+          401
+        )
+      )
+    }
+
     if (currentUser.changedPasswordAfter(decoded.iat)) {
       return next(
         new AppError(

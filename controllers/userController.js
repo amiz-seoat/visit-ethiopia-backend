@@ -28,7 +28,7 @@ export const updateMyProfile = catchAsync(async (req, res, next) => {
     )
   }
   // 2) Filter out unwanted fields names that are not allowed to be updated
-  const filteredBody = fillterObj(req.body, ['name', 'email'])
+  const filteredBody = fillterObj(req.body, ['FirstName', 'LastName', 'email'])
   // 3) Update user document
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,
@@ -45,6 +45,11 @@ export const updateMyProfile = catchAsync(async (req, res, next) => {
 export const deleteMyProfile = catchAsync(async (req, res, next) => {
   // 1) Find user and set active to false
   await User.findByIdAndUpdate(req.user.id, { active: false })
+
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  })
 
   res.status(204).json({
     status: 'success',
