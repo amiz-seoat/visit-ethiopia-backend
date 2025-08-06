@@ -1,9 +1,9 @@
 import express from 'express'
 
-import { test } from '../controllers/hotelController.js'
+import { test } from '../controllers/tourController.js'
 
 const router = express.Router()
 
-router.get('/hotel', test)
+router.get('/tour', test)
 
 export default router

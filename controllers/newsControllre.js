@@ -1,4 +1,4 @@
-import Destination from '../models/Destination.js'
+import News from '../models/News.js'
 import catchAsync from '../utils/catchAsync.js'
 import AppError from '../utils/appError.js'
 

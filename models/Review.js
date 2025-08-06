@@ -22,6 +22,6 @@ const ReviewSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now },
 })
 
-const Review = mongoose.model('Review', Review)
+const Review = mongoose.model('Review', ReviewSchema)
 
 export default Review

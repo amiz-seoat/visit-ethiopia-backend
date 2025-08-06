@@ -1,4 +1,4 @@
-import Destination from '../models/Destination.js'
+import Tour from '../models/Tour.js'
 import catchAsync from '../utils/catchAsync.js'
 import AppError from '../utils/appError.js'
 
