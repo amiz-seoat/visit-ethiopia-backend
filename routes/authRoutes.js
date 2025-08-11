@@ -27,12 +27,10 @@ router.post('/logout', logOut)
 router.post('/forgotPassword', forgotPassword)
 router.patch('/resetPassword/:token', resetPassword)
 
-router.use(protect)
-
-router.patch('/updatePassword', updatePassword)
+router.patch('/updatePassword', protect, updatePassword)
 
 // ✅ Test route (protected)
-router.get('/test', (req, res) => {
+router.get('/test', protect, (req, res) => {
   res.status(200).json({
     status: 'success',
     message: 'You are authenticated and can access this route.',
@@ -41,12 +39,10 @@ router.get('/test', (req, res) => {
 
 router
   .route('/profile')
-  .get(getMyProfile, getUser)
-  .patch(updateMyProfile)
-  .delete(deleteMyProfile)
+  .get(getMyProfile, protect, getUser)
+  .patch(protect, updateMyProfile)
+  .delete(protect, deleteMyProfile)
 
-router.use(restrict('admin'))
-
-router.route('/:id').get(getUser)
+router.route('/:id').get(protect, restrict('admin'), getUser)
 
 export default router
