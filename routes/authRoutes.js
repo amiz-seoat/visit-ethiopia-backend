@@ -39,7 +39,7 @@ router.get('/test', protect, (req, res) => {
 
 router
   .route('/profile')
-  .get(getMyProfile, protect, getUser)
+  .get(protect, getMyProfile, getUser)
   .patch(protect, updateMyProfile)
   .delete(protect, deleteMyProfile)
 
