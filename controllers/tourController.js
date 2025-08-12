@@ -10,3 +10,5 @@ export const test = catchAsync(async (req, res) => {
 })
 
 export const getAllTours = factory.getAll(Tour)
+
+export const getTour = factory.getOne(Tour, { path: 'reviews' })
