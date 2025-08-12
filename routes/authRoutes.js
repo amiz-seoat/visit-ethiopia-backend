@@ -15,6 +15,7 @@ import {
   updateMyProfile,
   deleteMyProfile,
   getUser,
+  updateUserRole,
 } from '../controllers/userController.js'
 
 const router = express.Router()
@@ -43,6 +44,7 @@ router
   .patch(protect, updateMyProfile)
   .delete(protect, deleteMyProfile)
 
-router.route('/:id').get(protect, restrict('admin'), getUser)
+router.route('/:id').get(protect, restrict('admin'), getUser);
+router.route('/:id').patch(protect, restrict('admin'), updateUserRole);
 
 export default router
