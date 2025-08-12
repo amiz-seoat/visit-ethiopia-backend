@@ -1,7 +1,6 @@
 import express from 'express'
 
-import { test } from '../controllers/tourController.js'
-import { getAllTours } from '../controllers/tourController.js'
+import { test, getAllTours } from '../controllers/tourController.js'
 
 const router = express.Router()
 
