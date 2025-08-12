@@ -47,7 +47,6 @@ const TourSchema = new mongoose.Schema({
   },
   guides: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   secretTour: { type: Boolean, default: false },
-  reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
   averageRating: { type: Number, default: 0 },
   isFeatured: { type: Boolean, default: false },
   status: {
@@ -79,8 +78,9 @@ TourSchema.pre(/^find/, function (next) {
 
 TourSchema.virtual('reviews', {
   ref: 'Review',
-  foreignField: 'tour',
+  foreignField: 'itemId',
   localField: '_id',
+  match: { itemType: 'tour' },
 })
 
 const Tour = mongoose.model('Tour', TourSchema)
