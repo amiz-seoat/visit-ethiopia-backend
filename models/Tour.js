@@ -45,6 +45,8 @@ const TourSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  guides: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  secretTour: { type: Boolean, default: false },
   reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
   averageRating: { type: Number, default: 0 },
   isFeatured: { type: Boolean, default: false },
@@ -55,6 +57,30 @@ const TourSchema = new mongoose.Schema({
   },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
+})
+
+TourSchema.pre('save', function (next) {
+  this.updatedAt = Date.now()
+  next()
+})
+
+TourSchema.pre(/^find/, function (next) {
+  this.find({ secretTour: { $ne: true } })
+  this.start = Date.now()
+  next()
+})
+TourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt',
+  })
+  next()
+})
+
+TourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
 })
 
 const Tour = mongoose.model('Tour', TourSchema)
