@@ -85,3 +85,5 @@ export const updateUserRole = catchAsync(async (req, res, next) => {
 export const getAllUsers = factory.getAll(User)
 
 export const getUser = factory.getOne(User)
+
+export const deleteUser = factory.deleteOne(User)
