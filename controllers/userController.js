@@ -58,28 +58,30 @@ export const deleteMyProfile = catchAsync(async (req, res, next) => {
 })
 
 export const updateUserRole = catchAsync(async (req, res, next) => {
-  const { role } = req.body;
+  const { role } = req.body
 
   if (!role) {
-    return next(new AppError('Please provide a role to update.', 400));
+    return next(new AppError('Please provide a role to update.', 400))
   }
 
   const user = await User.findByIdAndUpdate(
     req.params.id,
     { role },
     { new: true, runValidators: true }
-  );
+  )
 
   if (!user) {
-    return next(new AppError('No user found with that ID.', 404));
+    return next(new AppError('No user found with that ID.', 404))
   }
 
   res.status(200).json({
     status: 'success',
     message: 'User role updated successfully.',
     data: { user },
-  });
-});
+  })
+})
 
+// Get all users (admin only)
+export const getAllUsers = factory.getAll(User)
 
 export const getUser = factory.getOne(User)
