@@ -8,7 +8,11 @@ export const test = catchAsync(async (req, res) => {
     message: 'test file',
   })
 })
-
+export const featuredTours = (req, res, next) => {
+  req.query.isFeatured = 'true'
+  req.query.sort = '-averageRating,price'
+  next()
+}
 export const getAllTours = factory.getAll(Tour)
 
 export const getTour = factory.getOne(Tour, { path: 'reviews' })
