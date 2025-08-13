@@ -11,7 +11,7 @@ const router = express.Router()
 
 router.get('/tour', test)
 router.get('/', getAllTours)
-router.get('/:id', getTour)
 router.get('/featured', featuredTours, getAllTours)
+router.get('/:id', getTour)
 
 export default router
