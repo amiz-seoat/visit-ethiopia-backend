@@ -9,13 +9,15 @@ import {
   getTourReviews,
 } from '../controllers/tourController.js'
 
+import { protect, restrict } from '../controllers/authController.js'
+
 const router = express.Router()
 
 // Test route
 router.get('/tour', test)
 
-// ✅ Create tour
-router.post('/', createTour)
+// ✅ Create tour (protected & restricted)
+router.post('/', protect, restrict('admin'), createTour)
 
 // ✅ Get all tours
 router.get('/', getAllTours)
