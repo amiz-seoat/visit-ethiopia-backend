@@ -28,5 +28,26 @@ const DestinationSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now },
 })
 
+DestinationSchema.pre('save', function (next) {
+  this.updatedAt = Date.now()
+  next()
+})
+
+DestinationSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'tours',
+    select: '-__v -createdAt -updatedAt',
+  })
+  next()
+})
+
+DestinationSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'nearbyAccommodations',
+    select: '-__v -createdAt -updatedAt',
+  })
+  next()
+})
+
 const Destination = mongoose.model('Destination', DestinationSchema)
 export default Destination
