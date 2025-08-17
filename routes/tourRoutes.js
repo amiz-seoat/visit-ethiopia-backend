@@ -7,6 +7,8 @@ import {
   getTour,
   featuredTours,
   getTourReviews,
+  updateTour,
+  deleteTour,
 } from '../controllers/tourController.js'
 
 const router = express.Router()
@@ -16,6 +18,11 @@ router.get('/tour', test)
 
 // ✅ Create tour
 router.post('/', createTour)
+
+// ✅ Update a tour
+router.patch('/:id', updateTour)
+// ✅ Delete a tour
+router.delete('/:id', deleteTour)
 
 // ✅ Get all tours
 router.get('/', getAllTours)

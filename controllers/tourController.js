@@ -20,6 +20,12 @@ export const featuredTours = (req, res, next) => {
 // ✅ Create a tour
 export const createTour = factory.createOne(Tour)
 
+//Delete a tour
+export const deleteTour = factory.deleteOne(Tour)
+
+// ✅ Update a tour
+export const updateTour = factory.updateOne(Tour)
+
 // ✅ Get all tours
 export const getAllTours = factory.getAll(Tour)
 
