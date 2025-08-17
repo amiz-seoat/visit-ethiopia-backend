@@ -1,15 +1,30 @@
-import express from 'express'
+import express from 'express';
 
 import {
   test,
   getAllDestinations,
   getDestination,
-} from '../controllers/destinationController.js'
+  createDestination,
+  getToursForDestination,
+} from '../controllers/destinationController.js';
 
-const router = express.Router()
+import { protect, restrict } from '../controllers/authController.js';
 
-router.get('/destination', test)
-router.get('/', getAllDestinations)
-router.get('/:id', getDestination)
+const router = express.Router();
 
-export default router
+// Test route
+router.get('/destination', test);
+
+// ✅ Admin only: Create a new destination
+router.post('/', protect, restrict('admin'), createDestination);
+
+// ✅ Public: Get all destinations
+router.get('/', getAllDestinations);
+
+// ✅ Public: Get single destination by ID
+router.get('/:id', getDestination);
+
+// ✅ Public: Get tours for a destination
+router.get('/:id/tours', getToursForDestination);
+
+export default router;
