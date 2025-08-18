@@ -24,6 +24,9 @@ export const getDestination = factory.getOne(Destination)
 
 export const createDestination = factory.createOne(Destination) // (Admin only)
 
+export const updateDestination = factory.updateOne(Destination)
+export const deleteDestination = factory.deleteOne(Destination)
+
 // ✅ Get Tours for a Destination
 export const getToursForDestination = catchAsync(async (req, res, next) => {
   const destination = await Destination.findById(req.params.id).populate(
