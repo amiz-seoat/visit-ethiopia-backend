@@ -32,10 +32,11 @@ router.get('/', getAllTours)
 // ✅ Featured tours
 router.get('/featured', featuredTours, getAllTours)
 
+// ✅ Get reviews for a specific tour
+router.get('/:id/reviews', getTourReviews)
+
 // ✅ Get single tour with reviews populated
 router.get('/:id', getTour)
 
-// ✅ Get reviews for a specific tour
-router.get('/:id/reviews', getTourReviews)
 
 export default router
