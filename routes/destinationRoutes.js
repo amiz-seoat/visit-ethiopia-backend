@@ -22,10 +22,11 @@ router.post('/', protect, restrict('admin'), createDestination)
 // ✅ Public: Get all destinations
 router.get('/', getAllDestinations)
 
-// ✅ Public: Get single destination by ID
-router.get('/:id', getDestination)
 // ✅ Public: Get featured destinations
 router.get('/featured', featuredDestinations, getAllDestinations)
+
+// ✅ Public: Get single destination by ID
+router.get('/:id', getDestination)
 
 // ✅ Public: Get tours for a destination
 router.get('/:id/tours', getToursForDestination)
