@@ -22,9 +22,9 @@ router.get('/tour', test)
 router.post('/', protect, restrict('admin'), createTour)
 
 // ✅ Update a tour
-router.patch('/:id', updateTour)
+router.patch('/:id', protect, restrict('admin'), updateTour)
 // ✅ Delete a tour
-router.delete('/:id', deleteTour)
+router.delete('/:id', protect, restrict('admin'), deleteTour)
 
 // ✅ Get all tours
 router.get('/', getAllTours)
