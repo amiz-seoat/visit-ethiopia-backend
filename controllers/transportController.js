@@ -24,7 +24,7 @@ export const getAllRoutes = catchAsync(async (req, res, next) => {
     .limitFields()
     .paginate()
 
-  const routes = await features.query
+  const transports = await features.query
 
   const flattenedRoutes = transports.flatMap((transport) =>
     transport.routes.map((route) => ({
