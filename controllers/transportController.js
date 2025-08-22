@@ -14,7 +14,7 @@ export const test = catchAsync(async (req, res) => {
 export const getAllTransports = factory.getAll(Transport)
 export const getTransport = factory.getOne(Transport, {
   path: 'reviews createdBy',
-  select: '-__v updatedAt ',
+  select: '-__v -createdAt -updatedAt',
 })
 
 export const getAllRoutes = catchAsync(async (req, res, next) => {
