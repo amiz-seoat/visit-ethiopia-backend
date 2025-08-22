@@ -20,7 +20,7 @@ export const featuredTours = (req, res, next) => {
 // ✅ Create a tour
 export const createTour = factory.createOne(Tour)
 
-//Delete a tour
+// ✅ Delete a tour
 export const deleteTour = factory.deleteOne(Tour)
 
 // ✅ Update a tour
@@ -32,17 +32,16 @@ export const getAllTours = factory.getAll(Tour)
 // ✅ Get a single tour with populated reviews
 export const getTour = factory.getOne(Tour, { path: 'reviews' })
 
-// ✅ Get reviews for a specific tour
+// ✅ Get reviews for a specific tour (using itemId + itemType)
 export const getTourReviews = catchAsync(async (req, res, next) => {
-  const reviews = await Review.find({ tour: req.params.id })
-  if (!reviews || reviews.length === 0) {
-    return next(new AppError('No reviews found for this tour', 404))
-  }
+  const reviews = await Review.find({ 
+    itemId: req.params.id, 
+    itemType: 'tour' 
+  })
+
   res.status(200).json({
     status: 'success',
     results: reviews.length,
-    data: {
-      reviews,
-    },
+    data: { reviews },
   })
 })
