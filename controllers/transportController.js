@@ -2,7 +2,6 @@ import Transport from '../models/Transport.js'
 import catchAsync from '../utils/catchAsync.js'
 import AppError from '../utils/appError.js'
 import factory from './handlerFactory.js'
-import Transport from '../models/Transport.js'
 import APIFeatures from '../utils/apiFeatures.js'
 
 export const test = catchAsync(async (req, res) => {
