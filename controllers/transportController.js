@@ -17,6 +17,6 @@ export const featuredTransports = (req, res, next) => {
 }
 
 export const getAllTransports = factory.getAll(Transport)
-export const getTransport = factory.getOne(Transport).populate({
+export const getTransport = factory.getOne(Transport, {
   path: 'reviews createdBy',
 })
