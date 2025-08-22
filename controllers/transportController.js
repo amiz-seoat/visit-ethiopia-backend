@@ -26,9 +26,20 @@ export const getAllRoutes = catchAsync(async (req, res, next) => {
 
   const routes = await features.query
 
+  const flattenedRoutes = transports.flatMap((transport) =>
+    transport.routes.map((route) => ({
+      transportId: transport._id,
+      transportName: transport.name,
+      type: transport.type,
+      vehicleDetails: transport.vehicleDetails,
+      contact: transport.contact,
+      ...route.toObject(), // spread route fields
+    }))
+  )
+
   res.status(200).json({
     status: 'success',
-    results: routes.length,
-    data: routes,
+    results: flattenedRoutes.length,
+    data: flattenedRoutes,
   })
 })
