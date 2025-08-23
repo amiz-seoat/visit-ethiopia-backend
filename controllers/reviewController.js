@@ -10,10 +10,6 @@ export const test = catchAsync(async (req, res) => {
   })
 })
 
-export const getPendingReviews = factory.getAll(
-  Review,
-  { status: 'pending' },
-  { path: 'user itemId' }
-)
+export const getPendingReviews = factory.getAll(Review, { status: 'pending' })
 
 export const approveReview = factory.updateOne(Review)

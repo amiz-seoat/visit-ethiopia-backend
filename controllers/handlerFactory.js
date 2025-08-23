@@ -52,22 +52,33 @@ export const getOne = (Model, popOptions) =>
     })
   })
 
-export const getAll = (Model) =>
+export const getAll = (Model, defaultFilter = {}, popOptions) =>
   catchAsync(async (req, res, next) => {
-    let filter
-    if (req.params.tourId) filter = { tour: req.params.tourId }
+    let filter = { ...defaultFilter }
+    if (req.params.tourId) {
+      filter.tour = req.params.tourId
+    }
 
-    const features = new APIFeatures(Model.find(filter), req.query)
+    let query = Model.find(filter)
+
+    if (popOptions) {
+      query = query.populate(popOptions)
+    }
+
+    const features = new APIFeatures(query, req.query)
       .filter()
       .sort()
       .limitFields()
       .paginate()
 
     const doc = await features.query
+
     res.status(200).json({
       status: 'success',
-      result: doc.length,
-      data: { data: doc },
+      results: doc.length,
+      data: {
+        data: doc,
+      },
     })
   })
 
