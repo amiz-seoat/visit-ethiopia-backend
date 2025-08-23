@@ -1,4 +1,8 @@
 import mongoose from 'mongoose'
+import Tour from './Tour.js'
+import Hotel from './Hotel.js'
+import Transport from './Transport.js'
+import Restaurant from './Restaurant.js'
 
 const ReviewSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
@@ -31,13 +35,6 @@ ReviewSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'user',
     select: 'FirstName LastName email',
-  })
-  next()
-})
-
-ReviewSchema.pre('/^find/', function (next) {
-  this.populate({
-    path: 'itemId',
   })
   next()
 })
