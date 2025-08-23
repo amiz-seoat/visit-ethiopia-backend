@@ -22,6 +22,26 @@ const ReviewSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now },
 })
 
+ReviewSchema.pre('save', function (next) {
+  this.updatedAt = Date.now()
+  next()
+})
+
+ReviewSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'user',
+    select: 'FirstName LastName email',
+  })
+  next()
+})
+
+ReviewSchema.pre('/^find/', function (next) {
+  this.populate({
+    path: 'itemId',
+  })
+  next()
+})
+
 const Review = mongoose.model('Review', ReviewSchema)
 
 export default Review
