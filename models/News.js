@@ -24,5 +24,18 @@ const NewsSchema = new mongoose.Schema({
   views: { type: Number, default: 0 },
 })
 
+NewsSchema.pre('save', function (next) {
+  this.updatedAt = Date.now()
+  next()
+})
+
+NewsSchema.pre(/^find/, function (next) {
+  this.populate({
+    author: 'user',
+    select: 'FirstName LastName email',
+  })
+  next()
+})
+
 const News = mongoose.model('News', NewsSchema)
 export default News
