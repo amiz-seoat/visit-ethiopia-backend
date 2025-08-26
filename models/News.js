@@ -24,14 +24,16 @@ const NewsSchema = new mongoose.Schema({
   views: { type: Number, default: 0 },
 })
 
+// update "updatedAt" before save
 NewsSchema.pre('save', function (next) {
   this.updatedAt = Date.now()
   next()
 })
 
+// auto-populate author details when querying
 NewsSchema.pre(/^find/, function (next) {
   this.populate({
-    author: 'user',
+    path: 'author',
     select: 'FirstName LastName email',
   })
   next()
