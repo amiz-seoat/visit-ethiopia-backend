@@ -12,7 +12,7 @@ export const test = catchAsync(async (req, res) => {
 
 export const featuredNews = catchAsync(async (req, res, next) => {
   const news = await News.find({ isFeatured: true }).limit(5)
-  if (!news) {
+  if (!news || news.length === 0) {
     return next(new AppError('No featured news found', 404))
   }
   res.status(200).json({
@@ -23,3 +23,17 @@ export const featuredNews = catchAsync(async (req, res, next) => {
 })
 
 export const getAllNews = factory.getAll(News)
+
+export const getNews = factory.getOne(News)
+
+export const createNews = catchAsync(async (req, res, next) => {
+  // attach current user as author
+  req.body.author = req.user.id
+
+  const news = await News.create(req.body)
+
+  res.status(201).json({
+    status: 'success',
+    data: news,
+  })
+})
