@@ -49,6 +49,31 @@ export const getTransportReviews = catchAsync(async (req, res, next) => {
   })
 })
 
+// Update transport (Admin only)
+export const updateTransport = catchAsync(async (req, res, next) => {
+  // Prevent updating createdBy field
+  if (req.body.createdBy) {
+    delete req.body.createdBy
+  }
+
+  const doc = await Transport.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  })
+
+  if (!doc) {
+    return next(new AppError('No transport found with that ID', 404))
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: { data: doc },
+  })
+})
+
+// Delete transport (Admin only)
+export const deleteTransport = factory.deleteOne(Transport)
+
 // Get all routes (existing)
 export const getAllRoutes = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(Transport.find(), req.query)
