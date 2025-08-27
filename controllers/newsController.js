@@ -37,3 +37,28 @@ export const createNews = catchAsync(async (req, res, next) => {
     data: news,
   })
 })
+
+// ✅ Update news (Admin only)
+export const updateNews = catchAsync(async (req, res, next) => {
+  // Prevent updating author field
+  if (req.body.author) {
+    delete req.body.author
+  }
+
+  const doc = await News.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  })
+
+  if (!doc) {
+    return next(new AppError('No news found with that ID', 404))
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: { data: doc },
+  })
+})
+
+// ✅ Delete news (Admin only)
+export const deleteNews = factory.deleteOne(News)
