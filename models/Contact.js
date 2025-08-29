@@ -18,5 +18,17 @@ const ContactSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now },
 })
 
+ContactSchema.pre('save', function (next) {
+  this.updatedAt = Date.now()
+  next()
+})
+
+ContactSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'respondedBy',
+    select: 'FirstName LastName email',
+  })
+  next()
+})
 const Contact = mongoose.model('Contact', ContactSchema)
 export default Contact
