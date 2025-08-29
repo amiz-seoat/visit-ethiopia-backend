@@ -10,12 +10,18 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:5000/api/v1',
-        description: 'Local server',
+        url:
+          process.env.NODE_ENV === 'production'
+            ? 'https://visit-ethiopia-backend-ku5l.vercel.app'
+            : 'http://localhost:5000/api/v1',
+        description:
+          process.env.NODE_ENV === 'production'
+            ? 'Production server'
+            : 'Local server',
       },
     ],
   },
-  apis: ['./swagger/*.docs.js'], // Where to find JSDoc comments
+  apis: ['./swagger/*.docs.js'],
 }
 
 const swaggerSpec = swaggerJsdoc(options)
