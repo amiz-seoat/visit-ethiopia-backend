@@ -51,7 +51,7 @@ app.use(
 )
 
 // Swagger docs route
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+app.use('/api/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 // Middleware
 app.use(cookieParser())
