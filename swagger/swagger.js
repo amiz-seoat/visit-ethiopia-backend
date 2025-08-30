@@ -12,7 +12,7 @@ const options = {
       {
         url:
           process.env.NODE_ENV === 'production'
-            ? 'https://visit-ethiopia-backend-ku5l.vercel.app'
+            ? 'https://visit-ethiopia-backend-ku5l.vercel.app/api/v1'
             : 'http://localhost:5000/api/v1',
         description:
           process.env.NODE_ENV === 'production'
