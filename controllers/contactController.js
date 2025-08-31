@@ -10,7 +10,17 @@ export const test = catchAsync(async (req, res) => {
   })
 })
 
-// List All inquiries
+// 👉 Submit new contact form
+export const createContact = catchAsync(async (req, res, next) => {
+  const contact = await Contact.create(req.body)
+
+  res.status(201).json({
+    status: 'success',
+    data: contact,
+  })
+})
+
+// List all inquiries (admin only)
 export const getAllContacts = factory.getAll(Contact)
-// Get a single inquiry
+// Get a single inquiry (admin only)
 export const getContact = factory.getOne(Contact)
