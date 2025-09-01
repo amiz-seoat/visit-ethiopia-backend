@@ -8,9 +8,9 @@ const router = express.Router()
 router.use(protect)
 
 // Create new booking
-router.post('/', createBooking)
+router.post('/',protect, createBooking)
 
 // Get current user's bookings
-router.get('/me', getMyBookings)
+router.get('/me',protect, getMyBookings)
 
 export default router
