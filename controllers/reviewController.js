@@ -57,7 +57,7 @@ export const updateReview = catchAsync(async (req, res, next) => {
   }
 
   // Check if the current user is the owner of the review
-  if (review.user.toString() !== req.user.id) {
+  if (review.user._id.toString() !== req.user.id) {
     return next(new AppError('You can only update your own reviews', 403))
   }
 
