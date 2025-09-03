@@ -60,5 +60,25 @@ const BookingSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now },
 })
 
+BookingSchema.pre('save', function (next) {
+  this.updatedAt = Date.now()
+  next()
+})
+BookingSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'user',
+    select: '-__v -passwordChangedAt',
+  })
+  next()
+})
+
+BookingSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'bookingItem',
+    select: '__v -createdAt -updatedAt',
+  })
+  next()
+})
+
 const Booking = mongoose.model('Booking', BookingSchema)
 export default Booking

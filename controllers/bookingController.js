@@ -75,6 +75,9 @@ export const cancelBooking = catchAsync(async (req, res, next) => {
   if (booking.status === 'cancelled') {
     return next(new AppError('Booking is already cancelled', 400))
   }
+  if (booking.status === 'completed') {
+    return next(new AppError('Completed bookings cannot be cancelled', 400))
+  }
   booking.status = 'cancelled'
   await booking.save()
   res.status(200).json({
@@ -83,5 +86,26 @@ export const cancelBooking = catchAsync(async (req, res, next) => {
   })
 })
 
-//update booking (admin only)
-export const updateBooking = factory.updateOne(Booking)
+//update booking status(admin only)
+export const updateBookingStatus = catchAsync(async (req, res, next) => {
+  const booking = await Booking.findById(req.params.id)
+  if (!booking) {
+    return next(new AppError('No booking found with that ID', 404))
+  }
+  const allowedUpdates = ['confirmed', 'pending', 'cancelled', 'completed']
+  const updates = Object.keys(req.body)
+  const isValidOperation = updates.every((update) =>
+    allowedUpdates.includes(update)
+  )
+  if (!isValidOperation) {
+    return next(new AppError('Invalid updates!', 400))
+  }
+  updates.forEach((update) => {
+    booking[update] = req.body[update]
+  })
+  await booking.save()
+  res.status(200).json({
+    status: 'success',
+    data: booking,
+  })
+})

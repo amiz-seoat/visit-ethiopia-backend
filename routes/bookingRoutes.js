@@ -3,9 +3,9 @@ import {
   createBooking,
   getMyBookings,
   cancelBooking,
-  updateBooking,
+  updateBookingStatus,
 } from '../controllers/bookingController.js'
-import { protect } from '../controllers/authController.js'
+import { protect, restrict } from '../controllers/authController.js'
 
 const router = express.Router()
 
@@ -20,6 +20,6 @@ router.get('/me', protect, getMyBookings)
 // Cancel a booking
 router.patch('/:id/cancel', protect, cancelBooking)
 // Update a booking
-router.patch('/:id', protect, updateBooking)
+router.patch('/:id', protect, restrict('admin'), updateBookingStatus)
 
 export default router
