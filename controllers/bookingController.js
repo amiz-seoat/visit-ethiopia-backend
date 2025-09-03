@@ -92,18 +92,18 @@ export const updateBookingStatus = catchAsync(async (req, res, next) => {
   if (!booking) {
     return next(new AppError('No booking found with that ID', 404))
   }
-  const allowedUpdates = ['confirmed', 'pending', 'cancelled', 'completed']
-  const updates = Object.keys(req.body)
-  const isValidOperation = updates.every((update) =>
-    allowedUpdates.includes(update)
-  )
-  if (!isValidOperation) {
-    return next(new AppError('Invalid updates!', 400))
+
+  const allowedStatuses = ['confirmed', 'pending', 'cancelled', 'completed']
+
+  // Check if status is provided and valid
+  if (!req.body.status || !allowedStatuses.includes(req.body.status)) {
+    return next(new AppError('Invalid booking status!', 400))
   }
-  updates.forEach((update) => {
-    booking[update] = req.body[update]
-  })
+
+  // Update the status
+  booking.status = req.body.status
   await booking.save()
+
   res.status(200).json({
     status: 'success',
     data: booking,
