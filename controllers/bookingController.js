@@ -1,6 +1,7 @@
 import Booking from '../models/Booking.js'
 import catchAsync from '../utils/catchAsync.js'
 import AppError from '../utils/appError.js'
+import factory from './handlerFactory.js'
 
 // Create new booking
 export const createBooking = catchAsync(async (req, res, next) => {
@@ -59,3 +60,28 @@ export const getMyBookings = catchAsync(async (req, res, next) => {
     data: bookings,
   })
 })
+
+// cancel booking
+export const cancelBooking = catchAsync(async (req, res, next) => {
+  const booking = await Booking.findById(req.params.id)
+  if (!booking) {
+    return next(new AppError('No booking found with that ID', 404))
+  }
+  if (booking.user.toString() !== req.user.id) {
+    return next(
+      new AppError('You do not have permission to cancel this booking', 403)
+    )
+  }
+  if (booking.status === 'cancelled') {
+    return next(new AppError('Booking is already cancelled', 400))
+  }
+  booking.status = 'cancelled'
+  await booking.save()
+  res.status(200).json({
+    status: 'success',
+    data: booking,
+  })
+})
+
+//update booking (admin only)
+export const updateBooking = factory.updateOne(Booking)
