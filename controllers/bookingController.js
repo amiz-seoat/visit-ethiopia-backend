@@ -69,7 +69,10 @@ export const cancelBooking = catchAsync(async (req, res, next) => {
   }
   if (booking.user.toString() !== req.user.id) {
     return next(
-      new AppError('You do not have permission to cancel this booking', 403)
+      new AppError(
+        `You do not have permission to cancel this booking ${req.user.id} and ${booking.user.toString()}`,
+        403
+      )
     )
   }
   if (booking.status === 'cancelled') {
