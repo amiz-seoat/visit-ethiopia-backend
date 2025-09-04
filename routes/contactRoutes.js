@@ -4,6 +4,7 @@ import {
   createContact,
   getAllContacts,
   getContact,
+  updateContactStatus,
 } from '../controllers/contactController.js'
 import { protect, restrict } from '../controllers/authController.js'
 
@@ -17,5 +18,8 @@ router.post('/', createContact)
 // Admin-only inquiry management
 router.route('/').get(protect, restrict('admin'), getAllContacts)
 router.route('/:id').get(protect, restrict('admin'), getContact)
+router
+  .route('/:id/status')
+  .patch(protect, restrict('admin'), updateContactStatus)
 
 export default router
