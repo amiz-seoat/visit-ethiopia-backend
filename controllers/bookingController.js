@@ -48,6 +48,29 @@ export const createBooking = catchAsync(async (req, res, next) => {
   })
 })
 
+// Get single booking (owner or admin)
+export const getBooking = catchAsync(async (req, res, next) => {
+  const booking = await Booking.findById(req.params.id)
+
+  if (!booking) {
+    return next(new AppError('No booking found with that ID', 404))
+  }
+
+  const isOwner = booking.user && booking.user._id.toString() === req.user.id
+  const isAdmin = req.user.role === 'admin'
+
+  if (!isOwner && !isAdmin) {
+    return next(
+      new AppError('You do not have permission to view this booking', 403)
+    )
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: booking,
+  })
+})
+
 // Get current user's bookings
 export const getMyBookings = catchAsync(async (req, res, next) => {
   const bookings = await Booking.find({ user: req.user.id }).sort({

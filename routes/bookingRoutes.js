@@ -1,6 +1,7 @@
 import express from 'express'
 import {
   createBooking,
+  getBooking,
   getMyBookings,
   cancelBooking,
   updateBookingStatus,
@@ -14,6 +15,9 @@ router.use(protect)
 
 // Create new booking
 router.post('/', protect, createBooking)
+
+// Get a booking by id (owner or admin)
+router.get('/:id', protect, getBooking)
 
 // Get current user's bookings
 router.get('/me', protect, getMyBookings)
