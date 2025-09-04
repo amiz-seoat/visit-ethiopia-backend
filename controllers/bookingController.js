@@ -3,6 +3,9 @@ import catchAsync from '../utils/catchAsync.js'
 import AppError from '../utils/appError.js'
 import factory from './handlerFactory.js'
 
+// List all bookings (admin only)
+export const getAllBookings = factory.getAll(Booking)
+
 // Create new booking
 export const createBooking = catchAsync(async (req, res, next) => {
   const {

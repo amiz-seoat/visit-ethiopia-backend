@@ -5,6 +5,7 @@ import {
   getMyBookings,
   cancelBooking,
   updateBookingStatus,
+  getAllBookings,
 } from '../controllers/bookingController.js'
 import { protect, restrict } from '../controllers/authController.js'
 
@@ -12,6 +13,9 @@ const router = express.Router()
 
 // All booking routes require login
 router.use(protect)
+
+// Admin: list all bookings
+router.get('/', protect, restrict('admin'), getAllBookings)
 
 // Create new booking
 router.post('/', protect, createBooking)
