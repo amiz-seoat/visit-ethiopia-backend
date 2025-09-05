@@ -78,4 +78,4 @@ NewsSchema.pre(/^find/, function (next) {
 
 const News = mongoose.model('News', NewsSchema)
 
-module.exports = News
+export default News

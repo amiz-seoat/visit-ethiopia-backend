@@ -88,4 +88,4 @@ RestaurantSchema.virtual('discountPercentage').get(function () {
 })
 
 const Restaurant = mongoose.model('Restaurant', RestaurantSchema)
-module.exports = Restaurant
+export default Restaurant

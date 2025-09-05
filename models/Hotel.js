@@ -86,4 +86,4 @@ HotelSchema.pre('save', function (next) {
 })
 
 const Hotel = mongoose.model('Hotel', HotelSchema)
-module.exports = Hotel
+export default Hotel

@@ -106,4 +106,4 @@ TransportSchema.pre('save', function (next) {
 })
 
 const Transport = mongoose.model('Transport', TransportSchema)
-module.exports = Transport
+export default Transport

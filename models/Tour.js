@@ -104,4 +104,4 @@ TourSchema.pre('save', function (next) {
 })
 
 const Tour = mongoose.model('Tour', TourSchema)
-module.exports = Tour
+export default Tour
