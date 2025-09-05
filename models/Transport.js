@@ -105,4 +105,5 @@ TransportSchema.pre('save', function (next) {
   next()
 })
 
-module.exports = mongoose.model('Transport', TransportSchema)
+const Transport = mongoose.model('Transport', TransportSchema)
+module.exports = Transport

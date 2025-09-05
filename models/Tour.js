@@ -103,4 +103,5 @@ TourSchema.pre('save', function (next) {
   next()
 })
 
-module.exports = mongoose.model('Tour', TourSchema)
+const Tour = mongoose.model('Tour', TourSchema)
+module.exports = Tour

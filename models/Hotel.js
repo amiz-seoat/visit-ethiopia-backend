@@ -85,4 +85,5 @@ HotelSchema.pre('save', function (next) {
   next()
 })
 
-module.exports = mongoose.model('Hotel', HotelSchema)
+const Hotel = mongoose.model('Hotel', HotelSchema)
+module.exports = Hotel
