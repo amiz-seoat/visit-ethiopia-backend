@@ -35,28 +35,25 @@ const NewsSchema = new mongoose.Schema(
         required: true,
       },
     ],
-    isFeatured: { type: Boolean, default: false },
+    isFeatured: {
+      type: Boolean,
+      default: false,
+    },
     status: {
       type: String,
       enum: ['published', 'draft', 'archived'],
       default: 'published',
     },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
   },
   {
-    timestamps: true,
+    timestamps: true, // Automatically adds createdAt and updatedAt
     toJSON: { virtuals: true },
   }
 )
 
-NewsSchema.pre('save', function (next) {
-  this.updatedAt = Date.now()
-  next()
-})
-
+// Indexes
 NewsSchema.index({ category: 1, date: -1 })
-NewsSchema.index({ featured: 1, date: -1 })
+NewsSchema.index({ isFeatured: 1, date: -1 }) // Fixed: changed 'featured' to 'isFeatured'
 
 // Virtual for formatted date
 NewsSchema.virtual('formattedDate').get(function () {
@@ -67,7 +64,7 @@ NewsSchema.virtual('formattedDate').get(function () {
   })
 })
 
-// auto-populate author details when querying
+// Auto-populate author details when querying
 NewsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'author',

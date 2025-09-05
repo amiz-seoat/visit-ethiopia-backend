@@ -33,12 +33,12 @@ const TourSchema = new mongoose.Schema(
       },
     ],
     type: {
+      type: String, // ✅ Added missing type definition
       required: true,
     },
     oldPrice: {
       type: Number,
       min: 0,
-      required: true,
     },
     price: {
       type: Number,
@@ -72,15 +72,14 @@ const TourSchema = new mongoose.Schema(
       enum: ['active', 'inactive', 'draft'],
       default: 'active',
     },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
   },
   {
-    timestamps: true,
+    timestamps: true, // Automatically adds createdAt and updatedAt
     toJSON: { virtuals: true },
   }
 )
 
+// Virtual for discount percentage
 TourSchema.virtual('discountPercentage').get(function () {
   if (this.oldPrice && this.oldPrice > 0) {
     return Math.round(((this.oldPrice - this.price) / this.oldPrice) * 100)
@@ -88,18 +87,21 @@ TourSchema.virtual('discountPercentage').get(function () {
   return 0
 })
 
+// Virtual for total reviews count
 TourSchema.virtual('totalReviews').get(function () {
   return this.reviews ? this.reviews.length : 0
 })
 
-// Index for better query performance
+// Indexes for better query performance
 TourSchema.index({ location: 1, type: 1 })
 TourSchema.index({ createdBy: 1, status: 1 })
 TourSchema.index({ isFeatured: 1, status: 1 })
 
-// Pre-save middleware to update timestamps
+// Pre-save middleware to ensure oldPrice is higher than price if both exist
 TourSchema.pre('save', function (next) {
-  this.updatedAt = Date.now()
+  if (this.oldPrice && this.oldPrice <= this.price) {
+    this.oldPrice = undefined
+  }
   next()
 })
 

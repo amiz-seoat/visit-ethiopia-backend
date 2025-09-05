@@ -31,7 +31,12 @@ const HotelSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
+    reviews: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Review',
+      },
+    ],
     tag: {
       type: String,
       default: '',
@@ -50,9 +55,18 @@ const HotelSchema = new mongoose.Schema(
       enum: ['active', 'inactive', 'draft'],
       default: 'active',
     },
-    isFeatured: { type: Boolean, default: false },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
+    isFeatured: {
+      type: Boolean,
+      default: false,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   {
     timestamps: true,

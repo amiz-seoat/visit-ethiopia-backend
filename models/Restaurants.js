@@ -50,41 +50,46 @@ const RestaurantSchema = new mongoose.Schema(
       min: 0,
       required: true,
     },
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
     status: {
       type: String,
       enum: ['active', 'inactive', 'draft'],
       default: 'active',
     },
-    isFeatured: { type: Boolean, default: false },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
+    isFeatured: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
-    timestamps: true,
+    timestamps: true, // Automatically adds createdAt and updatedAt
     toJSON: { virtuals: true },
   }
 )
 
-RestaurantSchema.pre('save', function (next) {
-  this.updatedAt = Date.now()
-  next()
-})
-RestaurantSchema.index({ location: 1, cuisine: 1 })
+// Indexes - Fixed: added missing 'cuisine' field or removed it
+RestaurantSchema.index({ location: 1 })
+// If you need cuisine index, add cuisine field to schema first:
+// cuisine: { type: String }
 
+// Virtual for total reviews count
 RestaurantSchema.virtual('totalReviews').get(function () {
   return this.reviews ? this.reviews.length : 0
 })
 
+// Virtual for discount percentage
 RestaurantSchema.virtual('discountPercentage').get(function () {
   if (this.oldPrice && this.oldPrice > 0) {
     return Math.round(((this.oldPrice - this.price) / this.oldPrice) * 100)
   }
   return 0
+})
+
+// Pre-save middleware to ensure oldPrice is higher than price if both exist
+RestaurantSchema.pre('save', function (next) {
+  if (this.oldPrice && this.oldPrice <= this.price) {
+    this.oldPrice = undefined
+  }
+  next()
 })
 
 const Restaurant = mongoose.model('Restaurant', RestaurantSchema)

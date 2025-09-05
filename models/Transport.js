@@ -45,7 +45,8 @@ const TransportSchema = new mongoose.Schema(
       enum: ['Petrol', 'Diesel', 'Electric', 'Hybrid'],
       required: true,
     },
-    PickupLocation: {
+    pickupLocation: {
+      // ✅ Fixed: changed 'PickupLocation' to 'pickupLocation' (camelCase)
       type: String,
       required: true,
     },
@@ -69,40 +70,44 @@ const TransportSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
-    isFeatured: { type: Boolean, default: false },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
+    reviews: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Review',
+      },
+    ],
+    isFeatured: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
-    timestamps: true,
+    timestamps: true, // Automatically adds createdAt and updatedAt
+    toJSON: { virtuals: true }, // ✅ Added to include virtuals in JSON output
   }
 )
-TourSchema.pre('save', function (next) {
-  this.updatedAt = Date.now()
-  next()
-})
 
 // Create compound indexes for better query performance
-TransportSchema.index({ location: 1, category: 1 })
+TransportSchema.index({ pickupLocation: 1, category: 1 }) // ✅ Fixed: changed 'location' to 'pickupLocation'
 TransportSchema.index({ brand: 1, model: 1 })
 TransportSchema.index({ status: 1, pricePerDay: 1 })
 
 // Virtual for average rating calculation
 TransportSchema.virtual('averageRating').get(function () {
-  if (this.reviews.length === 0) return this.rating || 0
+  if (!this.reviews || this.reviews.length === 0) return this.rating || 0
 
-  const total = this.reviews.reduce((sum, review) => sum + review.rating, 0)
-  return (total / this.reviews.length).toFixed(1)
+  // Note: This virtual assumes reviews are populated with rating field
+  // If reviews are just ObjectIds, you'll need to populate them first
+  const total = this.reviews.reduce(
+    (sum, review) => sum + (review.rating || 0),
+    0
+  )
+  return parseFloat((total / this.reviews.length).toFixed(1))
 })
 
-// Pre-save middleware to update overall rating based on reviews
-TransportSchema.pre('save', function (next) {
-  if (this.reviews.length > 0) {
-    const total = this.reviews.reduce((sum, review) => sum + review.rating, 0)
-    this.rating = parseFloat((total / this.reviews.length).toFixed(1))
-  }
-  next()
+// Virtual for total reviews count
+TransportSchema.virtual('totalReviews').get(function () {
+  return this.reviews ? this.reviews.length : 0
 })
 
 const Transport = mongoose.model('Transport', TransportSchema)
