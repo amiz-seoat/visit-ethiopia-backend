@@ -75,31 +75,3 @@ export const updateTransport = catchAsync(async (req, res, next) => {
 
 // Delete transport (Admin only)
 export const deleteTransport = factory.deleteOne(Transport)
-
-// Get all routes (existing)
-export const getAllRoutes = catchAsync(async (req, res, next) => {
-  const features = new APIFeatures(Transport.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate()
-
-  const transports = await features.query
-
-  const flattenedRoutes = transports.flatMap((transport) =>
-    transport.routes.map((route) => ({
-      transportId: transport._id,
-      transportName: transport.brand,
-      type: transport.transport.model,
-      catagory: transport.catagory,
-      fuelType: transport.fuelType,
-      ...route.toObject(),
-    }))
-  )
-
-  res.status(200).json({
-    status: 'success',
-    results: flattenedRoutes.length,
-    data: flattenedRoutes,
-  })
-})
