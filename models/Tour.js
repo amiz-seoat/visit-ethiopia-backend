@@ -1,55 +1,72 @@
-import mongoose from 'mongoose'
+const mongoose = require('mongoose')
 
 const TourSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true },
-    description: { type: String, required: true },
-    shortDescription: { type: String, required: true },
-    duration: {
-      days: { type: Number, required: true },
-      nights: { type: Number, required: true },
+    id: {
+      type: Number,
+      required: true,
+      unique: true,
     },
-    destinations: [{ type: String, required: true }],
-    categories: [
-      {
-        type: String,
-        enum: ['cultural', 'adventure', 'nature', 'historical', 'religious'],
-      },
-    ],
-    difficulty: {
+    title: {
       type: String,
-      enum: ['easy', 'moderate', 'challenging'],
+      required: true,
+      trim: true,
+    },
+    location: {
+      type: String,
       required: true,
     },
-    price: { type: Number, required: true },
-    discount: { type: Number, default: 0 },
-    images: [{ type: String }],
-    coverImage: { type: String, required: true },
-    startDate: { type: Date },
-    endDate: { type: Date },
-    availableDates: [{ type: Date }],
-    maxGroupSize: { type: Number, required: true },
-    currentBookings: { type: Number, default: 0 },
-    inclusions: [{ type: String }],
-    exclusions: [{ type: String }],
-    itinerary: [
+    image: {
+      type: String,
+      required: true,
+    },
+    rating: {
+      type: Number,
+      min: 0,
+      max: 5,
+      default: 0,
+    },
+    reviews: [
       {
-        day: { type: Number, required: true },
-        title: { type: String, required: true },
-        description: { type: String, required: true },
-        meals: { type: String },
-        accommodation: { type: String },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Review',
       },
     ],
+    type: {
+      required: true,
+    },
+    oldPrice: {
+      type: Number,
+      min: 0,
+      required: true,
+    },
+    price: {
+      type: Number,
+      min: 0,
+      required: true,
+    },
+    likelyToSellOut: {
+      type: Boolean,
+      default: false,
+    },
+    discountAvailable: {
+      type: Boolean,
+      default: false,
+    },
+    guests: {
+      type: Number,
+      min: 1,
+      required: true,
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },
-    guides: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    secretTour: { type: Boolean, default: false },
-    averageRating: { type: Number, default: 0 },
-    isFeatured: { type: Boolean, default: false },
+    isFeatured: {
+      type: Boolean,
+      default: false,
+    },
     status: {
       type: String,
       enum: ['active', 'inactive', 'draft'],
@@ -59,36 +76,31 @@ const TourSchema = new mongoose.Schema(
     updatedAt: { type: Date, default: Date.now },
   },
   {
+    timestamps: true,
     toJSON: { virtuals: true },
-    toObject: { virtuals: true },
   }
 )
 
+TourSchema.virtual('discountPercentage').get(function () {
+  if (this.oldPrice && this.oldPrice > 0) {
+    return Math.round(((this.oldPrice - this.price) / this.oldPrice) * 100)
+  }
+  return 0
+})
+
+TourSchema.virtual('totalReviews').get(function () {
+  return this.reviews ? this.reviews.length : 0
+})
+
+// Index for better query performance
+TourSchema.index({ location: 1, type: 1 })
+TourSchema.index({ createdBy: 1, status: 1 })
+TourSchema.index({ isFeatured: 1, status: 1 })
+
+// Pre-save middleware to update timestamps
 TourSchema.pre('save', function (next) {
   this.updatedAt = Date.now()
   next()
 })
 
-TourSchema.pre(/^find/, function (next) {
-  this.find({ secretTour: { $ne: true } })
-  this.start = Date.now()
-  next()
-})
-TourSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: 'guides',
-    select: '-__v -passwordChangedAt',
-  })
-  next()
-})
-
-TourSchema.virtual('reviews', {
-  ref: 'Review',
-  foreignField: 'itemId',
-  localField: '_id',
-  match: { itemType: 'tour' },
-})
-
-const Tour = mongoose.model('Tour', TourSchema)
-
-export default Tour
+module.exports = mongoose.model('Tour', TourSchema)

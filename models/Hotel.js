@@ -1,42 +1,30 @@
-import mongoose from 'mongoose'
+const mongoose = require('mongoose')
 
 const HotelSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
-    description: { type: String, required: true },
-    shortDescription: { type: String, required: true },
+    id: {
+      type: Number,
+      required: true,
+      unique: true,
+    },
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     location: {
-      address: { type: String, required: true },
-      city: { type: String, required: true },
-      region: { type: String, required: true },
-      coordinates: {
-        lat: { type: Number },
-        lng: { type: Number },
-      },
+      type: String,
+      required: true,
     },
-    stars: { type: Number, min: 1, max: 5 },
-    amenities: [{ type: String }],
-    roomTypes: [
-      {
-        type: { type: String, required: true },
-        description: { type: String },
-        price: { type: Number, required: true },
-        capacity: { type: Number, required: true },
-        availableRooms: { type: Number, required: true },
-        images: [{ type: String }],
-      },
-    ],
-    images: [{ type: String }],
-    coverImage: { type: String, required: true },
-    contact: {
-      phone: { type: String, required: true },
-      email: { type: String, required: true },
-      website: { type: String },
+    image: {
+      type: String,
+      required: true,
     },
-    policies: {
-      checkIn: { type: String },
-      checkOut: { type: String },
-      cancellation: { type: String },
+    rating: {
+      type: Number,
+      min: 0,
+      max: 5,
+      default: 0,
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -44,19 +32,31 @@ const HotelSchema = new mongoose.Schema(
       required: true,
     },
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
-    averageRating: { type: Number, default: 0 },
-    isFeatured: { type: Boolean, default: false },
+    tag: {
+      type: String,
+      default: '',
+    },
+    oldPrice: {
+      type: Number,
+      min: 0,
+    },
+    price: {
+      type: Number,
+      min: 0,
+      required: true,
+    },
     status: {
       type: String,
       enum: ['active', 'inactive', 'draft'],
       default: 'active',
     },
+    isFeatured: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
   },
   {
+    timestamps: true,
     toJSON: { virtuals: true },
-    toObject: { virtuals: true },
   }
 )
 
@@ -65,5 +65,24 @@ HotelSchema.pre('save', function (next) {
   next()
 })
 
-const Hotel = mongoose.model('Hotel', HotelSchema)
-export default Hotel
+// Create a compound index for better query performance
+HotelSchema.index({ location: 1, rating: -1 })
+HotelSchema.index({ tag: 1 })
+
+// Virtual for discount percentage
+HotelSchema.virtual('discountPercentage').get(function () {
+  if (this.oldPrice && this.oldPrice > 0) {
+    return Math.round(((this.oldPrice - this.price) / this.oldPrice) * 100)
+  }
+  return 0
+})
+
+// Pre-save middleware to ensure oldPrice is higher than price if both exist
+HotelSchema.pre('save', function (next) {
+  if (this.oldPrice && this.oldPrice <= this.price) {
+    this.oldPrice = undefined
+  }
+  next()
+})
+
+module.exports = mongoose.model('Hotel', HotelSchema)

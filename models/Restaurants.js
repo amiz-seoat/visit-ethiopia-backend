@@ -1,66 +1,90 @@
-import mongoose from 'mongoose'
+const mongoose = require('mongoose')
 
-const RestaurantSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  description: { type: String, required: true },
-  shortDescription: { type: String, required: true },
-  cuisineType: [{ type: String, required: true }],
-  location: {
-    address: { type: String, required: true },
-    city: { type: String, required: true },
-    region: { type: String, required: true },
-    coordinates: {
-      lat: { type: Number },
-      lng: { type: Number },
+const RestaurantSchema = new mongoose.Schema(
+  {
+    id: {
+      type: Number,
+      required: true,
+      unique: true,
     },
-  },
-  openingHours: {
-    monday: { type: String },
-    tuesday: { type: String },
-    wednesday: { type: String },
-    thursday: { type: String },
-    friday: { type: String },
-    saturday: { type: String },
-    sunday: { type: String },
-  },
-  priceRange: { type: String, enum: ['$', '$$', '$$$', '$$$$'] },
-  menu: [
-    {
-      category: { type: String, required: true },
-      items: [
-        {
-          name: { type: String, required: true },
-          description: { type: String },
-          price: { type: Number, required: true },
-          isVegetarian: { type: Boolean, default: false },
-          isVegan: { type: Boolean, default: false },
-        },
-      ],
+    title: {
+      type: String,
+      required: true,
+      trim: true,
     },
-  ],
-  images: [{ type: String }],
-  coverImage: { type: String, required: true },
-  contact: {
-    phone: { type: String, required: true },
-    email: { type: String },
-    website: { type: String },
+    location: {
+      type: String,
+      required: true,
+    },
+    image: {
+      type: String,
+      required: true,
+    },
+    rating: {
+      type: Number,
+      min: 0,
+      max: 5,
+      default: 0,
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    reviews: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Review',
+      },
+    ],
+    tag: {
+      type: String,
+      default: '',
+    },
+    oldPrice: {
+      type: Number,
+      min: 0,
+    },
+    price: {
+      type: Number,
+      min: 0,
+      required: true,
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ['active', 'inactive', 'draft'],
+      default: 'active',
+    },
+    isFeatured: { type: Boolean, default: false },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
   },
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
-  averageRating: { type: Number, default: 0 },
-  isFeatured: { type: Boolean, default: false },
-  status: {
-    type: String,
-    enum: ['active', 'inactive', 'draft'],
-    default: 'active',
-  },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+  }
+)
+
+RestaurantSchema.pre('save', function (next) {
+  this.updatedAt = Date.now()
+  next()
+})
+RestaurantSchema.index({ location: 1, cuisine: 1 })
+
+RestaurantSchema.virtual('totalReviews').get(function () {
+  return this.reviews ? this.reviews.length : 0
 })
 
-const Restaurant = mongoose.model('Restaurant', RestaurantSchema)
-export default Restaurant
+RestaurantSchema.virtual('discountPercentage').get(function () {
+  if (this.oldPrice && this.oldPrice > 0) {
+    return Math.round(((this.oldPrice - this.price) / this.oldPrice) * 100)
+  }
+  return 0
+})
+
+module.exports = mongoose.model('Restaurant', RestaurantSchema)
