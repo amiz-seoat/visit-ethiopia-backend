@@ -13,7 +13,7 @@ export const test = catchAsync(async (req, res) => {
 
 export const featuredTours = (req, res, next) => {
   req.query.isFeatured = 'true'
-  req.query.sort = '-averageRating,price'
+  req.query.sort = '-rating,price'
   next()
 }
 

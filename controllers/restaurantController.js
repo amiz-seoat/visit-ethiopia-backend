@@ -14,7 +14,7 @@ export const test = catchAsync(async (req, res) => {
 // Filter for featured restaurants
 export const featuredRestaurants = (req, res, next) => {
   req.query.isFeatured = 'true'
-  req.query.sort = '-averageRating,price'
+  req.query.sort = '-rating,price'
   next()
 }
 
@@ -37,7 +37,7 @@ export const getRestaurantReviews = catchAsync(async (req, res, next) => {
     path: 'reviews',
     populate: {
       path: 'user',
-      select: 'name email',
+      select: 'FirstName LastName email',
     },
   })
 

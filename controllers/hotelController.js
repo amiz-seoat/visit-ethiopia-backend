@@ -15,7 +15,7 @@ export const test = catchAsync(async (req, res) => {
 // ✅ Featured hotels middleware
 export const featuredHotels = (req, res, next) => {
   req.query.isFeatured = 'true'
-  req.query.sort = '-averageRating,price'
+  req.query.sort = '-rating,price'
   next()
 }
 
@@ -53,7 +53,7 @@ export const deleteHotel = factory.deleteOne(Hotel)
 export const getHotelReviews = catchAsync(async (req, res, next) => {
   const hotel = await Hotel.findById(req.params.id).populate({
     path: 'reviews',
-    populate: { path: 'createdBy', select: 'name email' },
+    populate: { path: 'createdBy', select: 'FirstName LastName email' },
   })
 
   if (!hotel) {

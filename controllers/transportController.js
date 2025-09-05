@@ -37,7 +37,7 @@ export const createTransport = catchAsync(async (req, res, next) => {
 export const getTransportReviews = catchAsync(async (req, res, next) => {
   const transport = await Transport.findById(req.params.id).populate({
     path: 'reviews',
-    populate: { path: 'user', select: 'name email' },
+    populate: { path: 'user', select: 'FirstName LastName email' },
   })
 
   if (!transport) {
@@ -89,10 +89,10 @@ export const getAllRoutes = catchAsync(async (req, res, next) => {
   const flattenedRoutes = transports.flatMap((transport) =>
     transport.routes.map((route) => ({
       transportId: transport._id,
-      transportName: transport.name,
-      type: transport.type,
-      vehicleDetails: transport.vehicleDetails,
-      contact: transport.contact,
+      transportName: transport.brand,
+      type: transport.transport.model,
+      catagory: transport.catagory,
+      fuelType: transport.fuelType,
       ...route.toObject(),
     }))
   )
