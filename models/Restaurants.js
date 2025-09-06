@@ -61,15 +61,14 @@ const RestaurantSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt
+    timestamps: true,
+    toObject: { virtuals: true },
     toJSON: { virtuals: true },
   }
 )
 
 // Indexes - Fixed: added missing 'cuisine' field or removed it
 RestaurantSchema.index({ location: 1 })
-// If you need cuisine index, add cuisine field to schema first:
-// cuisine: { type: String }
 
 // Virtual for total reviews count
 RestaurantSchema.virtual('totalReviews').get(function () {

@@ -82,8 +82,9 @@ const TransportSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt
-    toJSON: { virtuals: true }, // ✅ Added to include virtuals in JSON output
+    timestamps: true,
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true },
   }
 )
 
@@ -95,9 +96,6 @@ TransportSchema.index({ status: 1, pricePerDay: 1 })
 // Virtual for average rating calculation
 TransportSchema.virtual('averageRating').get(function () {
   if (!this.reviews || this.reviews.length === 0) return this.rating || 0
-
-  // Note: This virtual assumes reviews are populated with rating field
-  // If reviews are just ObjectIds, you'll need to populate them first
   const total = this.reviews.reduce(
     (sum, review) => sum + (review.rating || 0),
     0

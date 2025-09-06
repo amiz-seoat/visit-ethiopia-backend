@@ -46,7 +46,8 @@ const NewsSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt
+    timestamps: true,
+    toObject: { virtuals: true },
     toJSON: { virtuals: true },
   }
 )
