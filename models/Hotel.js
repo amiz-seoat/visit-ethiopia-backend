@@ -67,11 +67,6 @@ const HotelSchema = new mongoose.Schema(
   }
 )
 
-HotelSchema.pre('save', function (next) {
-  this.updatedAt = Date.now()
-  next()
-})
-
 // Create a compound index for better query performance
 HotelSchema.index({ location: 1, rating: -1 })
 HotelSchema.index({ tag: 1 })
@@ -84,11 +79,20 @@ HotelSchema.virtual('discountPercentage').get(function () {
   return 0
 })
 
-// Pre-save middleware to ensure oldPrice is higher than price if both exist
+// Virtual for total reviews count
+HotelSchema.virtual('totalReviews').get(function () {
+  return this.reviews ? this.reviews.length : 0
+})
+
+// Pre-save middleware to handle both updatedAt and oldPrice validation
 HotelSchema.pre('save', function (next) {
+  this.updatedAt = Date.now()
+
+  // Ensure oldPrice is higher than price if both exist
   if (this.oldPrice && this.oldPrice <= this.price) {
     this.oldPrice = undefined
   }
+
   next()
 })
 
