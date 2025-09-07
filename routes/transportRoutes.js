@@ -3,7 +3,6 @@ import {
   test,
   getAllTransports,
   getTransport,
-  getAllRoutes,
   createTransport,
   getTransportReviews,
   updateTransport,
@@ -20,7 +19,6 @@ router
   .get(getAllTransports)
   .post(protect, restrict('admin'), createTransport) // ✅ only admin can create
 
-router.get('/routes', getAllRoutes)
 router.get('/:id/reviews', getTransportReviews) // ✅ new route
 
 // Transport CRUD routes
