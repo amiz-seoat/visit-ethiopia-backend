@@ -27,7 +27,11 @@ export const deleteTour = factory.deleteOne(Tour)
 export const updateTour = factory.updateOne(Tour)
 
 // ✅ Get all tours
-export const getAllTours = factory.getAll(Tour, { path: 'reviews createdBy' })
+export const getAllTours = factory.getAll(
+  Tour,
+  {},
+  { path: 'reviews createdBy' }
+)
 
 // ✅ Get a single tour with populated reviews
 export const getTour = factory.getOne(Tour, { path: 'reviews' })

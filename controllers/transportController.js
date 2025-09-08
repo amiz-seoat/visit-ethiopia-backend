@@ -13,9 +13,11 @@ export const test = catchAsync(async (req, res) => {
 })
 
 // Existing
-export const getAllTransports = factory.getAll(Transport, {
-  path: 'reviews createdBy',
-})
+export const getAllTransports = factory.getAll(
+  Transport,
+  {},
+  { path: 'reviews createdBy' }
+)
 export const getTransport = factory.getOne(Transport, {
   path: 'reviews createdBy',
   select: '-__v -createdAt -updatedAt',

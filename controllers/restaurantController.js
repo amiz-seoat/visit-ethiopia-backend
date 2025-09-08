@@ -55,9 +55,11 @@ export const getRestaurantReviews = catchAsync(async (req, res, next) => {
 })
 
 // Other handlers
-export const getAllRestaurants = factory.getAll(Restaurant, {
-  path: 'reviews createdBy',
-})
+export const getAllRestaurants = factory.getAll(
+  Restaurant,
+  {},
+  { path: 'reviews createdBy' }
+)
 export const getRestaurant = factory.getOne(Restaurant, {
   path: 'reviews createdBy',
 })
