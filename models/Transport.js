@@ -2,11 +2,6 @@ import mongoose from 'mongoose'
 
 const TransportSchema = new mongoose.Schema(
   {
-    id: {
-      type: Number,
-      required: true,
-      unique: true,
-    },
     brand: {
       type: String,
       required: true,
