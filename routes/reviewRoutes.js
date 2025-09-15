@@ -1,6 +1,7 @@
 import express from 'express'
 import {
   test,
+  getAllReviews,
   getPendingReviews,
   approveReview,
   createReview,
@@ -14,6 +15,9 @@ const router = express.Router()
 
 // Test route
 router.get('/review', test)
+
+// Get all reviews (public)
+router.get('/', getAllReviews)
 
 // User routes
 router.post('/', protect, createReview) // ✅ create review

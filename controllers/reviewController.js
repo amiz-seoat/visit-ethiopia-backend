@@ -10,6 +10,8 @@ export const test = catchAsync(async (req, res) => {
     message: 'test file',
   })
 })
+//get all reviews
+export const getAllReviews = factory.getAll(Review)
 
 // Admin: Get all pending reviews
 export const getPendingReviews = factory.getAll(Review, { status: 'pending' })
