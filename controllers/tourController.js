@@ -66,15 +66,17 @@ export const getAllTours = factory.getAll(
 export const getTour = factory.getOne(Tour, ['reviews', 'createdBy'])
 
 // ✅ Get reviews for a specific tour (using itemId + itemType)
+// ✅ Get reviews for a specific tour (using the reviews array from Tour model)
 export const getTourReviews = catchAsync(async (req, res, next) => {
-  const reviews = await Review.find({
-    itemId: req.params.id,
-    itemType: 'tour',
-  })
+  const tour = await Tour.findById(req.params.id).populate('reviews')
+
+  if (!tour) {
+    return next(new AppError('No tour found with that ID', 404))
+  }
 
   res.status(200).json({
     status: 'success',
-    results: reviews.length,
-    data: { reviews },
+    results: tour.reviews.length,
+    data: { reviews: tour.reviews },
   })
 })
