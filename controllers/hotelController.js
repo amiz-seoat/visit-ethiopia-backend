@@ -75,7 +75,10 @@ export const deleteHotel = factory.deleteOne(Hotel)
 export const getHotelReviews = catchAsync(async (req, res, next) => {
   const hotel = await Hotel.findById(req.params.id).populate({
     path: 'reviews',
-    populate: { path: 'createdBy', select: 'FirstName LastName email' },
+    populate: {
+      path: 'user',
+      select: 'FirstName LastName email',
+    },
   })
 
   if (!hotel) {
