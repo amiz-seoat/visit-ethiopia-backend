@@ -63,7 +63,7 @@ export const getAllTours = factory.getAll(
 )
 
 // ✅ Get a single tour with populated reviews
-export const getTour = factory.getOne(Tour, { path: 'reviews' })
+export const getTour = factory.getOne(Tour, {}, { path: 'reviews createdBy' })
 
 // ✅ Get reviews for a specific tour (using itemId + itemType)
 export const getTourReviews = catchAsync(async (req, res, next) => {

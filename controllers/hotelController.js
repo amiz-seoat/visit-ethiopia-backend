@@ -43,7 +43,7 @@ export const getAllHotels = factory.getAll(
 )
 
 // ✅ Get single hotel with reviews + createdBy
-export const getHotel = factory.getOne(Hotel, { path: 'reviews createdBy' })
+export const getHotel = factory.getOne(Hotel, {}, { path: 'reviews createdBy' })
 
 // ✅ Update hotel (admin only)
 export const updateHotel = catchAsync(async (req, res, next) => {
