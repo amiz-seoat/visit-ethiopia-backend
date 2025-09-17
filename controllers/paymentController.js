@@ -5,7 +5,6 @@ export const initializePayment = async (req, res) => {
   try {
     const { amount, email, firstName, lastName } = req.body
 
-    // Generate unique transaction reference
     const tx_ref = `tx-${Date.now()}`
 
     const response = await axios.post(
@@ -29,8 +28,10 @@ export const initializePayment = async (req, res) => {
 
     res.status(200).json(response.data)
   } catch (error) {
-    console.error(error.response?.data || error.message)
-    res.status(500).json({ error: 'Payment initialization failed' })
+    console.error('Chapa Error:', error.response?.data || error.message)
+    res.status(500).json({
+      error: error.response?.data || 'Payment initialization failed',
+    })
   }
 }
 
