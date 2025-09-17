@@ -23,6 +23,7 @@ import cookieParser from 'cookie-parser'
 import swaggerUi from 'swagger-ui-express'
 import swaggerSpec from './swagger/swagger.js'
 import cors from 'cors'
+import paymentRoutes from './routes/paymentRoutes.js'
 
 // Define __dirname in ES Modules
 const __filename = fileURLToPath(import.meta.url)
@@ -86,6 +87,7 @@ app.use('/api/v1/restaurants', restaurantRouter)
 app.use('/api/v1/reviews', reviewRouter)
 app.use('/api/v1/tours', tourRouter)
 app.use('/api/v1/transports', transportRouter)
+app.use('/api/v1/payment', paymentRoutes)
 
 // Catch unmatched routes
 app.all(/(.*)/, (req, res, next) => {
