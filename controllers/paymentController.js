@@ -26,7 +26,12 @@ export const initializePayment = async (req, res) => {
       }
     )
 
-    res.status(200).json(response.data)
+    res.status(200).json({
+      message: response.data.message,
+      status: response.data.status,
+      data: response.data.data,
+      tx_ref,
+    })
   } catch (error) {
     console.error('Chapa Error:', error.response?.data || error.message)
     res.status(500).json({
