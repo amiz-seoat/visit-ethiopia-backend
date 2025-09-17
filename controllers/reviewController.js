@@ -19,7 +19,15 @@ export const getAllReviews = factory.getAll(Review)
 export const getPendingReviews = factory.getAll(Review, { status: 'pending' })
 
 // Admin: Approve review
-export const approveReview = factory.updateOne(Review)
+export const approveReview = catchAsync(async (req, res, next) => {
+  const review = await Review.findById(req.params.id)
+  if (!review) {
+    return next(new AppError('No review found with that ID', 404))
+  }
+  review.status = 'approved'
+  await review.save({ validateBeforeSave: false })
+  res.status(200).json({ status: 'success', data: review })
+})
 
 // ✅ User: Create new review
 export const createReview = catchAsync(async (req, res, next) => {
