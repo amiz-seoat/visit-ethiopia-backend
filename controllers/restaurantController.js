@@ -67,7 +67,7 @@ export const getAllRestaurants = factory.getAll(Restaurant, {}, [
   'reviews',
   'createdBy',
 ])
-export const getRestaurant = factory.getOne(Restaurant, {}, [
+export const getRestaurant = factory.getOne(Restaurant, [
   'reviews',
   'createdBy',
 ])
