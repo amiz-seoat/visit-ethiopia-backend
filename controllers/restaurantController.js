@@ -63,18 +63,14 @@ export const getRestaurantReviews = catchAsync(async (req, res, next) => {
 })
 
 // Other handlers
-export const getAllRestaurants = factory.getAll(
-  Restaurant,
-  {},
-  { path: 'reviews createdBy' }
-)
-export const getRestaurant = factory.getOne(
-  Restaurant,
-  {},
-  {
-    path: 'reviews createdBy',
-  }
-)
+export const getAllRestaurants = factory.getAll(Restaurant, {}, [
+  'reviews',
+  'createdBy',
+])
+export const getRestaurant = factory.getOne(Restaurant, {}, [
+  'reviews',
+  'createdBy',
+])
 export const updateRestaurant = catchAsync(async (req, res, next) => {
   let updateData = { ...req.body }
   // If a new image is uploaded
