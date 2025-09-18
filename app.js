@@ -43,7 +43,8 @@ app.set('trust proxy', 1)
 app.use(
   cors({
     origin: [
-      'https://touropia-web-32pr-git-main-gudas-projects.vercel.app',
+      'https://touropia-web-32pr-94l7qxozs-gudas-projects.vercel.app', // current deployed frontend
+      'https://touropia-web-32pr-git-main-gudas-projects.vercel.app', // preview branch
       'http://localhost:5173',
       'http://localhost:5175',
     ],
