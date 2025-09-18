@@ -42,7 +42,11 @@ app.set('trust proxy', 1)
 // CORS middleware
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'http://localhost:5175'],
+    origin: [
+      'https://touropia-web-32pr-git-main-gudas-projects.vercel.app',
+      'http://localhost:5173',
+      'http://localhost:5175',
+    ],
     credentials: true,
   })
 )
