@@ -39,20 +39,14 @@ export const createRestaurant = catchAsync(async (req, res, next) => {
   })
 })
 
-// ✅ Get reviews for a specific restaurant
+// ✅ Get reviews for a specific restaurant (using the reviews array from restaurant model)
 export const getRestaurantReviews = catchAsync(async (req, res, next) => {
-  const restaurant = await Restaurant.findById(req.params.id).populate({
-    path: 'reviews',
-    populate: {
-      path: 'user',
-      select: 'FirstName LastName email',
-    },
-  })
-
+  const restaurant = await Restaurant.findById(req.params.id).populate(
+    'reviews'
+  )
   if (!restaurant) {
     return next(new AppError('No restaurant found with that ID', 404))
   }
-
   res.status(200).json({
     status: 'success',
     results: restaurant.reviews.length,

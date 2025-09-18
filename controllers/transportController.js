@@ -34,21 +34,16 @@ export const createTransport = catchAsync(async (req, res, next) => {
   res.status(201).json({ status: 'success', data: transport })
 })
 
-// Get reviews of a specific transport
+// ✅ Get reviews for a specific transport (using the reviews array from transport model)
 export const getTransportReviews = catchAsync(async (req, res, next) => {
-  const transport = await Transport.findById(req.params.id).populate({
-    path: 'reviews',
-    populate: { path: 'user', select: 'FirstName LastName email' },
-  })
-
+  const transport = await Transport.findById(req.params.id).populate('reviews')
   if (!transport) {
     return next(new AppError('No transport found with that ID', 404))
   }
-
   res.status(200).json({
     status: 'success',
     results: transport.reviews.length,
-    data: transport.reviews,
+    data: { reviews: transport.reviews },
   })
 })
 

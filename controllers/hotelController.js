@@ -71,23 +71,18 @@ export const updateHotel = catchAsync(async (req, res, next) => {
 // ✅ Delete hotel (admin only)
 export const deleteHotel = factory.deleteOne(Hotel)
 
-// ✅ Get hotel reviews
+// ✅ Get reviews for a specific hotel (using the reviews array from Tour model)
 export const getHotelReviews = catchAsync(async (req, res, next) => {
-  const hotel = await Hotel.findById(req.params.id).populate({
-    path: 'reviews',
-    populate: {
-      path: 'user',
-      select: 'FirstName LastName email',
-    },
-  })
+  const hotel = await Hotel.findById(req.params.id).populate('reviews')
 
   if (!hotel) {
     return next(new AppError('No hotel found with that ID', 404))
   }
-
-  res.status(200).json({
-    status: 'success',
-    results: hotel.reviews.length,
-    data: { reviews: hotel.reviews },
-  })
+  res
+    .status(200)
+    .json({
+      status: 'success',
+      results: hotel.reviews.length,
+      data: { reviews: hotel.reviews },
+    })
 })

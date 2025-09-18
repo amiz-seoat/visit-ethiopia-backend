@@ -45,7 +45,7 @@ app.use(
     origin: [
       'http://localhost:5173',
       'http://localhost:5175',
-      'https://visit-ethiopia-frontend.vercel.app',
+      'https://touropia-web-32pr-git-main-gudas-projects.vercel.app',
     ],
     credentials: true,
   })
