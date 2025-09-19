@@ -140,13 +140,13 @@ export const signup = catchAsync(async (req, res, next) => {
       ? process.env.PROD_BACKEND_URL
       : process.env.BACKEND_URL
 
-  const verifyUrl = `${backendUrl}/api/v1/users/verify/${token}`
+  const verifyUrl = `${process.env.FRONTEND_URL}/verify-email/${token}`
 
   const message = `Please verify your email: ${verifyUrl}`
 
   const htmlMessage = `
   <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px;">
-    <h2>Welcome, ${newUser.name}! 🎉</h2>
+    <h2>Welcome, ${newUser.FirstName}! 🎉</h2>
     <p>Thanks for signing up. Please verify your email by clicking the button below:</p>
     <a href="${verifyUrl}" style="background: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
       Verify Email
@@ -230,18 +230,42 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
   // 3) Send it to user's email
   const resetURL = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`
 
-  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`
+  // Plain fallback message
+  const message = `Forgot your password? Reset it using this link: ${resetURL}`
+
+  // HTML email
+  const htmlMessage = `
+    <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f9f9f9;">
+      <div style="max-width: 500px; margin: auto; background: #ffffff; border-radius: 8px; padding: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+        <h2 style="color: #333;">Password Reset Request</h2>
+        <p style="color: #555;">Hello <strong>${user.FirstName || user.email}</strong>,</p>
+        <p style="color: #555;">We received a request to reset your password. Click the button below to choose a new one. This link is valid for <strong>10 minutes</strong>.</p>
+        
+        <a href="${resetURL}" 
+          style="display: inline-block; margin: 20px 0; padding: 12px 24px; font-size: 16px; color: #fff; background: #007BFF; text-decoration: none; border-radius: 6px;">
+          Reset Password
+        </a>
+
+        <p style="color: #555;">If the button doesn’t work, copy and paste this link into your browser:</p>
+        <p style="word-break: break-all;"><a href="${resetURL}">${resetURL}</a></p>
+
+        <hr style="margin: 20px 0;">
+        <p style="color: #999; font-size: 12px;">If you did not request this, you can safely ignore this email.</p>
+      </div>
+    </div>
+  `
 
   try {
     await sendEmail({
       email: user.email,
-      subject: 'Your password reset token (valid for 10 min)',
+      subject: 'Reset your password (valid for 10 min)',
       message,
+      html: htmlMessage,
     })
 
     res.status(200).json({
       status: 'success',
-      message: 'Token sent to email!',
+      message: 'Password reset link sent to your email!',
     })
   } catch (err) {
     user.passwordResetToken = undefined
