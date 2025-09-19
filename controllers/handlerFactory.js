@@ -76,9 +76,7 @@ export const getAll = (Model, defaultFilter = {}, popOptions) =>
     res.status(200).json({
       status: 'success',
       results: doc.length,
-      data: {
-        data: doc,
-      },
+      data: doc,
     })
   })
 
