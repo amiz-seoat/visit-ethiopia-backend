@@ -25,7 +25,7 @@ export const updateOne = (Model) =>
     }
     res.status(200).json({
       status: 'success',
-      data: { data: doc },
+      data: doc, // ✅ flattened
     })
   })
 
@@ -34,7 +34,7 @@ export const createOne = (Model) =>
     const doc = await Model.create(req.body)
     res.status(201).json({
       status: 'success',
-      data: { data: doc },
+      data: doc, // ✅ flattened
     })
   })
 
@@ -48,7 +48,7 @@ export const getOne = (Model, popOptions) =>
     }
     res.status(200).json({
       status: 'success',
-      data: { data: doc },
+      data: doc, // ✅ flattened
     })
   })
 
@@ -76,7 +76,7 @@ export const getAll = (Model, defaultFilter = {}, popOptions) =>
     res.status(200).json({
       status: 'success',
       results: doc.length,
-      data: doc,
+      data: doc, // ✅ flattened
     })
   })
 
