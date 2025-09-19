@@ -24,7 +24,7 @@ const router = express.Router()
 
 router.post('/signup', signup)
 router.post('/login', login)
-router.get('/verify/:token', verifyEmail)
+router.get('/verify-email/:token', verifyEmail)
 router.post('/logout', logOut)
 
 router.post('/forgotPassword', forgotPassword)
